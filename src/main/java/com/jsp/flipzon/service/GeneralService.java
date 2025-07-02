@@ -75,4 +75,17 @@ public class GeneralService {
 		return "main";
 	}
 
+	public String handleForgetPassword(String email, HttpSession session) {
+	    Customer customer = customerRepository.findByEmail(email);
+	    if (customer == null) {
+	        session.setAttribute("fail", "Email not found");
+	        return "redirect:/forget-password";
+	    }
+
+	    String decryptedPassword = AES.decrypt(customer.getPassword());
+	    session.setAttribute("pass", "Your password is: " + decryptedPassword);
+	    return "redirect:/login";
+	}
+
+
 }

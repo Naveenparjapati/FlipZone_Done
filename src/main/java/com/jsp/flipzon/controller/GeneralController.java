@@ -36,4 +36,17 @@ public class GeneralController {
 	public String logout(HttpSession session) {
 		return generalService.logout(session);
 	}
+	
+	@GetMapping("/forget-password")
+	public String loadForgetPasswordPage() {
+	    return "forget-password.html";
+	}
+
+	@PostMapping("/forget-password")
+	public String forgetPassword(@RequestParam String email, HttpSession session) {
+	    return generalService.handleForgetPassword(email, session);
+	}
+
+	
+	
 }
