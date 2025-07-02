@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - FlipZone</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #334155;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --success: #10b981;
+        --danger: #ef4444;
+        --border: #475569;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      /* Navbar */
+      .navbar {
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 0;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--accent) !important;
+      }
+
+      .btn-outline-light {
+        color: var(--text-primary);
+        border-color: var(--border);
+        padding: 0.4rem 1rem;
+        font-weight: 500;
+      }
+
+      .btn-outline-light:hover {
+        background-color: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      .btn-primary {
+        background-color: var(--accent);
+        border-color: var(--accent);
+        padding: 0.4rem 1rem;
+        font-weight: 500;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
+      }
+
+      /* Alert */
+      .alert-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 350px;
+      }
+
+      .alert {
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        color: white;
+      }
+
+      .alert-success {
+        background-color: var(--success);
+      }
+
+      .alert-danger {
+        background-color: var(--danger);
+      }
+
+      .alert-info {
+        background-color: var(--accent);
+      }
+
+      /* Login Container */
+      .login-container {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2.5rem 2rem;
+        max-width: 400px;
+        width: 100%;
+      }
+
+      /* Logo Section */
+      .login-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .login-logo .brand-icon {
+        font-size: 2.5rem;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+
+      .login-logo .brand-name {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .login-logo .brand-subtitle {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 400;
+      }
+
+      /* Form Styling */
+      .login-form {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .form-control {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+      }
+
+      .form-control:focus {
+        background-color: var(--bg-secondary);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        color: var(--text-primary);
+      }
+
+      .form-control::placeholder {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Password Field with Toggle */
+      .password-field {
+        position: relative;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.2rem;
+      }
+
+      .password-toggle:hover {
+        color: var(--accent);
+      }
+
+      /* Forgot Password Link */
+      .forgot-password {
+        text-align: right;
+        margin-top: 0.5rem;
+      }
+
+      .forgot-password a {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .forgot-password a:hover {
+        color: var(--accent-hover);
+      }
+
+      /* Login Button */
+      .login-button {
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        width: 100%;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .login-button:hover {
+        background-color: var(--accent-hover);
+      }
+
+      .login-button:disabled {
+        background-color: var(--border);
+        cursor: not-allowed;
+      }
+
+      /* Register Link */
+      .register-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .register-link p {
+        color: var(--text-secondary);
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+      }
+
+      .register-link a {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        text-decoration: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid var(--border);
+      }
+
+      .register-link a:hover {
+        background-color: var(--border);
+        color: var(--text-primary);
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+        padding: 1.5rem 0;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        font-size: 0.9rem;
+        margin-top: auto;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .login-container {
+          padding: 2rem 1.5rem;
+          margin: 1rem;
+        }
+
+        .login-logo .brand-name {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="/">
+            <i class="bi bi-shop"></i> FlipZone
+          </a>
+          <div>
+            <a href="/" class="btn btn-outline-light me-2">
+              <i class="bi bi-house"></i> Home
+            </a>
+            <a href="/customer/register" class="btn btn-primary">
+              <i class="bi bi-person-plus"></i> Register
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Alert Messages -->
+      <div class="alert-container">
+        <div
+          th:if="${session.pass}"
+          class="alert alert-success alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <span th:text="${session.pass}">Success message</span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+
+        <div
+          th:if="${session.fail}"
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <span th:text="${session.fail}">Error message</span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+
+        <div
+          th:if="${@generalService.removeMessage()}"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-info-circle-fill me-2"></i>
+          <span th:text="${@generalService.removeMessage()}">Info message</span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="login-container">
+          <!-- Logo Section -->
+          <div class="login-logo">
+            <div class="brand-icon">
+              <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <div class="brand-name">Welcome Back</div>
+            <div class="brand-subtitle">Sign in to your FlipZone account</div>
+          </div>
+
+          <!-- Login Form -->
+          <form action="/login" method="post" class="login-form" id="loginForm">
+            <!-- Email Field -->
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <i class="bi bi-envelope"></i>
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                class="form-control"
+                id="email"
+                placeholder="Enter your email address"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+              <label for="password" class="form-label">
+                <i class="bi bi-lock"></i>
+                Password
+              </label>
+              <div class="password-field">
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control"
+                  id="password"
+                  placeholder="Enter your password"
+                  required
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  id="passwordToggle"
+                >
+                  <i class="bi bi-eye" id="toggleIcon"></i>
+                </button>
+              </div>
+              <div class="forgot-password">
+                <a href="/forgot-password">
+                  <i class="bi bi-question-circle"></i>
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-button" id="loginBtn">
+              <i class="bi bi-box-arrow-in-right"></i>
+              Sign In
+            </button>
+          </form>
+
+          <!-- Register Link -->
+          <div class="register-link">
+            <p>Don't have an account yet?</p>
+            <a href="/customer/register">
+              <i class="bi bi-person-plus"></i>
+              Create New Account
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <p>
+            &copy; 2025 FlipZone. All rights reserved. Made with
+            <i class="bi bi-heart-fill text-danger"></i>
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                  // Auto-hide alerts after 5 seconds
+                  const alerts = document.querySelectorAll(".alert");
+                  alerts.forEach(function (alert) {
+                      setTimeout(function () {
+                          const bsAlert = bootstrap.Alert.getInstance(alert);
+                          if (bsAlert) {
+                              bsAlert.close();
+                          }
+                      }, 5000);
+                  });
+
+                  // Password toggle functionality
+                  const passwordToggle = document.getElementById("passwordToggle");
+                  const passwordField = document.getElementById("password");
+                  const toggleIcon = document.getElementById("toggleIcon");
+
+                  if (passwordToggle && passwordField && toggleIcon) {
+                      passwordToggle.addEventListener("click", function () {
+                          const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+                          passwordField.setAttribute("type", type);
+                          toggleIcon.classList.toggle("bi-eye");
+                          toggleIcon.classList.toggle("bi-eye-slash");
+                      });
+                  }
+
+                  // Form submission with loading state
+                  const loginForm = document.getElementById("loginForm");
+                  const loginBtn = document.getElementById("loginBtn");
+
+                  if (loginForm && loginBtn) {
+                      loginForm.addEventListener("submit", function (e) {
+                          // Add loading state
+                          loginBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Signing In...';
+                          loginBtn.disabled = true;
+
+                          // Reset after 5 seconds if form doesn't submit (fallback)
+                          setTimeout(() => {
+                              loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+                              loginBtn.disabled = false;
+                          }, 5000);
+                      });
+                  }
+
+                  // Add entrance animation to login container
+                  const loginContainer = document.querySelector(".login-container");
+                  if (loginContainer) {
+                      loginContainer.style.opacity = "0";
+                      loginContainer.style.transform = "translateY(30px)";
+                      loginContainer.style.transition = "all 0.6s ease";
+
+                      setTimeout(() => {
+                          loginContainer.style.opacity = "1";
+                          loginContainer.style.transform = "translateY(0)";
+                      }, 100);
+                  }
+
+                  // Focus on email field
+                  const emailField = document.getElementById("email");
+                  if (emailField) {
+                      setTimeout(() => {
+                          emailField.focus();
+                      }, 500);
+                  }
+              });
+
+              // Form validation
+              function validateForm() {
+                  const email = document.getElementById("email").value;
+                  const password = document.getElementById("password").value;
+
+                  if (!email || !password) {
+                      alert("Please fill in all fields");
+                      return false;
+                  }
+
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                  if (!emailRegex.test(email)) {
+                      alert("Please enter a valid email address");
+                      return false;
+                  }
+
+                  if (password.length < 5) {
+                      alert("Password must be at least 5 characters long");
+                      return false;
+                  }
+
+                  return true;
+              }
+
+              // Add form validation to submit event
+              document.getElementById("loginForm").addEventListener("submit", function (e) {
+                  if (!validateForm()) {
+                      e.preventDefault();
+                      // Reset button state
+                      const loginBtn = document.getElementById("loginBtn");
+                      loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+                      loginBtn.disabled = false;
+                  }
+              });
+    </script>
+  </body>
+</html>

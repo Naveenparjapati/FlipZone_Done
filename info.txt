@@ -1,0 +1,11 @@
+Resume
+----------
+Flipzon – E-commerce Web Application
+Tech Stack: Spring Boot, Thymeleaf, MySQL, Cloudinary, Razorpay, HTML/CSS/JS
+
+Developed a full-stack e-commerce application with two modules – Admin and Customer. Implemented product management (add/edit/delete) for admin, and user registration with email verification for customers. Enabled product browsing with search, filter, and pagination. Integrated Cloudinary for image storage and Razorpay for secure online payments. Features include cart management and real-time user experience
+
+
+interview
+--------------
+Developed Flipzon, a full-stack e-commerce web application using Spring Boot, Thymeleaf, and MySQL with two modules – Admin and Customer. Admins can log in to add, edit, and delete products, with images stored via Cloudinary API. Customers can register with email verification, log in, browse products using search, filters, and pagination, and manage cart items. Integrated Razorpay for secure online payments. Implemented features like session management, image handling, and real-time user interactions for a complete shopping experience.

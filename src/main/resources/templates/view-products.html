@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Products - FlipZone Admin</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #334155;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --border: #475569;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 2rem 0;
+      }
+
+      /* Navbar */
+      .navbar {
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 0;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--accent) !important;
+      }
+
+      .btn-outline-danger {
+        color: var(--danger);
+        border-color: var(--danger);
+        padding: 0.4rem 1rem;
+        font-weight: 500;
+      }
+
+      .btn-outline-danger:hover {
+        background-color: var(--danger);
+        border-color: var(--danger);
+        color: white;
+      }
+
+      /* Alert */
+      .alert-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 350px;
+      }
+
+      .alert {
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        color: white;
+        margin-bottom: 0.5rem;
+      }
+
+      .alert-success {
+        background-color: var(--success);
+      }
+
+      .alert-danger {
+        background-color: var(--danger);
+      }
+
+      .alert-info {
+        background-color: var(--accent);
+      }
+
+      /* Page Header */
+      .page-header {
+        background-color: var(--bg-secondary);
+        padding: 2rem 0;
+        border-bottom: 1px solid var(--border);
+        text-align: center;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+      }
+
+      /* Table Container */
+      .table-container {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 2rem 0;
+      }
+
+      .table-header {
+        background-color: var(--bg-secondary);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .table-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      .btn-add {
+        background-color: var(--success);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .btn-add:hover {
+        background-color: #059669;
+        color: white;
+        text-decoration: none;
+      }
+
+      /* Custom Table */
+      .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--bg-card);
+      }
+
+      .custom-table th {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        font-weight: 600;
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9rem;
+      }
+
+      .custom-table td {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-primary);
+        vertical-align: middle;
+      }
+
+      .custom-table tbody tr:hover {
+        background-color: var(--bg-secondary);
+      }
+
+      /* Product Image */
+      .product-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      /* Product Info */
+      .product-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .product-description {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .product-price {
+        font-weight: 600;
+        color: var(--success);
+        font-size: 1.1rem;
+      }
+
+      .product-stock {
+        font-weight: 500;
+      }
+
+      .stock-high {
+        color: var(--success);
+      }
+
+      .stock-medium {
+        color: var(--warning);
+      }
+
+      .stock-low {
+        color: var(--danger);
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+
+      .btn-edit {
+        background-color: var(--warning);
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .btn-edit:hover {
+        background-color: #d97706;
+        color: white;
+        text-decoration: none;
+      }
+
+      .btn-delete {
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .btn-delete:hover {
+        background-color: #dc2626;
+        color: white;
+        text-decoration: none;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-secondary);
+      }
+
+      .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--border);
+      }
+
+      .empty-state h3 {
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+        padding: 1.5rem 0;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        font-size: 0.9rem;
+        margin-top: auto;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .table-header {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .custom-table {
+          font-size: 0.8rem;
+        }
+
+        .custom-table th,
+        .custom-table td {
+          padding: 0.5rem;
+        }
+
+        .product-image {
+          width: 40px;
+          height: 40px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+
+        .alert-container {
+          right: 10px;
+          left: 10px;
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .custom-table th:nth-child(3),
+        .custom-table td:nth-child(3) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="/admin/home">
+            <i class="bi bi-shop"></i> FlipZone Admin
+          </a>
+          <div>
+            <a href="/logout" class="btn btn-outline-danger">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Alert Messages -->
+      <div class="alert-container">
+        <div
+          th:if="${session.pass}"
+          class="alert alert-success alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <span th:text="${session.pass}">Success message</span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+
+        <div
+          th:if="${session.fail}"
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <span th:text="${session.fail}">Error message</span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+
+        <div
+          th:if="${@generalService.removeMessage()}"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-info-circle-fill me-2"></i>
+          <span th:text="${@generalService.removeMessage()}">Info message</span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="container">
+          <h1 class="page-title">
+            <i class="bi bi-box-seam"></i> Product Management
+          </h1>
+          <p class="page-subtitle">
+            View and manage all products in your store
+          </p>
+        </div>
+      </section>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="container">
+          <div class="table-container">
+            <div class="table-header">
+              <h2 class="table-title">All Products</h2>
+              <a href="/admin/add-product" class="btn-add">
+                <i class="bi bi-plus-circle"></i>
+                Add New Product
+              </a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table" th:if="${!products.isEmpty()}">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="product : ${products}">
+                    <td>
+                      <div class="product-name" th:text="${product.name}">
+                        Product Name
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="product-description"
+                        th:text="${product.description}"
+                        th:title="${product.description}"
+                      >
+                        Product description
+                      </div>
+                    </td>
+                    <td>
+                      <img
+                        th:src="${product.imageLink}"
+                        th:alt="${product.name}"
+                        class="product-image"
+                        onerror="this.src='https://via.placeholder.com/60x60/334155/cbd5e1?text=No+Image'"
+                      />
+                    </td>
+                    <td>
+                      <span
+                        class="product-stock"
+                        th:text="${product.stock}"
+                        th:classappend="${product.stock > 50} ? 'stock-high' : (${product.stock > 10} ? 'stock-medium' : 'stock-low')"
+                      >
+                        0
+                      </span>
+                    </td>
+                    <td>
+                      <span class="product-price"
+                        >₹<span
+                          th:text="${#numbers.formatDecimal(product.price, 0, 2)}"
+                          >0.00</span
+                        ></span
+                      >
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <a
+                          th:href="'/admin/edit-product/' + ${product.id}"
+                          class="btn-edit"
+                        >
+                          <i class="bi bi-pencil"></i>
+                          Edit
+                        </a>
+                        <a
+                          th:href="'/admin/delete-product/' + ${product.id}"
+                          class="btn-delete"
+                          onclick="return confirm('Are you sure you want to delete this product?')"
+                        >
+                          <i class="bi bi-trash"></i>
+                          Delete
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Empty State -->
+              <div th:if="${products.isEmpty()}" class="empty-state">
+                <i class="bi bi-box-seam"></i>
+                <h3>No Products Found</h3>
+                <p>
+                  You haven't added any products yet. Start by adding your first
+                  product to the store.
+                </p>
+                <a href="/admin/add-product" class="btn-add">
+                  <i class="bi bi-plus-circle"></i>
+                  Add Your First Product
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <p>
+            &copy; 2025 FlipZone Admin Panel. All rights reserved. Made with
+            <i class="bi bi-heart-fill text-danger"></i>
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll(".alert");
+        alerts.forEach(function (alert) {
+          setTimeout(function () {
+            const bsAlert = bootstrap.Alert.getInstance(alert);
+            if (bsAlert) {
+              bsAlert.close();
+            }
+          }, 5000);
+        });
+
+        // Add entrance animation to table
+        const tableContainer = document.querySelector(".table-container");
+        if (tableContainer) {
+          tableContainer.style.opacity = "0";
+          tableContainer.style.transform = "translateY(30px)";
+          tableContainer.style.transition = "all 0.6s ease";
+
+          setTimeout(() => {
+            tableContainer.style.opacity = "1";
+            tableContainer.style.transform = "translateY(0)";
+          }, 100);
+        }
+
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll(".custom-table tbody tr");
+        tableRows.forEach((row) => {
+          row.addEventListener("mouseenter", function () {
+            this.style.transform = "scale(1.01)";
+            this.style.transition = "all 0.2s ease";
+          });
+
+          row.addEventListener("mouseleave", function () {
+            this.style.transform = "scale(1)";
+          });
+        });
+
+        // Add click feedback for action buttons
+        const actionButtons = document.querySelectorAll(
+          ".btn-edit, .btn-delete, .btn-add"
+        );
+        actionButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            this.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              this.style.transform = "";
+            }, 150);
+          });
+        });
+
+        // Enhanced delete confirmation
+        const deleteButtons = document.querySelectorAll(".btn-delete");
+        deleteButtons.forEach((button) => {
+          button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const productName =
+              this.closest("tr").querySelector(".product-name").textContent;
+
+            if (
+              confirm(
+                `Are you sure you want to delete "${productName}"?\n\nThis action cannot be undone.`
+              )
+            ) {
+              // Add loading state
+              this.innerHTML =
+                '<i class="bi bi-arrow-clockwise"></i> Deleting...';
+              this.style.pointerEvents = "none";
+
+              // Navigate to delete URL
+              window.location.href = this.href;
+            }
+          });
+        });
+
+        // Image error handling
+        const productImages = document.querySelectorAll(".product-image");
+        productImages.forEach((img) => {
+          img.addEventListener("error", function () {
+            this.src =
+              "https://via.placeholder.com/60x60/334155/cbd5e1?text=No+Image";
+          });
+        });
+
+        // Add loading state to edit buttons
+        const editButtons = document.querySelectorAll(".btn-edit");
+        editButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Loading...';
+            this.style.pointerEvents = "none";
+          });
+        });
+
+        // Animate page header
+        const pageHeader = document.querySelector(".page-header");
+        if (pageHeader) {
+          pageHeader.style.opacity = "0";
+          pageHeader.style.transform = "translateY(-20px)";
+          pageHeader.style.transition = "all 0.8s ease";
+
+          setTimeout(() => {
+            pageHeader.style.opacity = "1";
+            pageHeader.style.transform = "translateY(0)";
+          }, 50);
+        }
+
+        // Add stagger animation to table rows
+        const rows = document.querySelectorAll(".custom-table tbody tr");
+        rows.forEach((row, index) => {
+          row.style.opacity = "0";
+          row.style.transform = "translateX(-20px)";
+          row.style.transition = "all 0.4s ease";
+
+          setTimeout(() => {
+            row.style.opacity = "1";
+            row.style.transform = "translateX(0)";
+          }, 200 + index * 50);
+        });
+      });
+
+      // Utility function for better user feedback
+      function showToast(message, type = "info") {
+        const toast = document.createElement("div");
+        toast.className = `alert alert-${type} position-fixed`;
+        toast.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+        toast.innerHTML = `
+                <i class="bi bi-info-circle-fill me-2"></i>
+                ${message}
+            `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = "1";
+          toast.style.transform = "translateX(0)";
+        }, 100);
+
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateX(100%)";
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

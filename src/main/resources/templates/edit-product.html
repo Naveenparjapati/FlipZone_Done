@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Product - FlipZone</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-card: #334155;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --success: #10b981;
+        --danger: #ef4444;
+        --border: #475569;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      .page-wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 2rem 0;
+      }
+
+      /* Navbar */
+      .navbar {
+        background-color: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 0;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--accent) !important;
+        text-decoration: none;
+      }
+
+      .navbar-brand:hover {
+        color: var(--accent-hover) !important;
+      }
+
+      .btn-outline-danger {
+        color: var(--danger);
+        border-color: var(--danger);
+        padding: 0.4rem 1rem;
+        font-weight: 500;
+      }
+
+      .btn-outline-danger:hover {
+        background-color: var(--danger);
+        border-color: var(--danger);
+        color: white;
+      }
+
+      /* Alert */
+      .alert-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 350px;
+      }
+
+      .alert {
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        color: white;
+        margin-bottom: 0.5rem;
+      }
+
+      .alert-success {
+        background-color: var(--success);
+      }
+
+      .alert-danger {
+        background-color: var(--danger);
+      }
+
+      .alert-info {
+        background-color: var(--accent);
+      }
+
+      /* Form Container */
+      .form-container {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2.5rem 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .form-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+      }
+
+      /* Form Styling */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .form-control,
+      .form-select {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: var(--bg-secondary);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        color: var(--text-primary);
+      }
+
+      .form-control::placeholder {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      /* File Input Styling */
+      .form-control[type="file"] {
+        padding: 0.5rem 1rem;
+      }
+
+      .form-control[type="file"]::-webkit-file-upload-button {
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        margin-right: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .form-control[type="file"]::-webkit-file-upload-button:hover {
+        background-color: var(--accent-hover);
+      }
+
+      /* Current Image */
+      .current-image-container {
+        margin-top: 1rem;
+        text-align: center;
+      }
+
+      .current-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid var(--border);
+        margin-bottom: 0.5rem;
+      }
+
+      .image-caption {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      /* Submit Button */
+      .btn-submit {
+        background-color: var(--success);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        width: 100%;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn-submit:hover {
+        background-color: #059669;
+      }
+
+      .btn-submit:disabled {
+        background-color: var(--border);
+        cursor: not-allowed;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--bg-primary);
+        color: var(--text-secondary);
+        padding: 1.5rem 0;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        font-size: 0.9rem;
+        margin-top: auto;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .form-container {
+          padding: 2rem 1.5rem;
+          margin: 1rem;
+        }
+
+        .form-title {
+          font-size: 1.75rem;
+        }
+
+        .alert-container {
+          right: 10px;
+          left: 10px;
+          max-width: none;
+        }
+      }
+
+      /* Loading State */
+      .loading {
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      /* Validation Styles */
+      .form-control.is-valid {
+        border-color: var(--success);
+        background-color: var(--bg-secondary);
+      }
+
+      .form-control.is-invalid {
+        border-color: var(--danger);
+        background-color: var(--bg-secondary);
+      }
+
+      .form-control.is-valid:focus {
+        border-color: var(--success);
+        box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+      }
+
+      .form-control.is-invalid:focus {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <a class="navbar-brand" href="/admin/home">
+            <i class="bi bi-shop"></i> FlipZone Admin
+          </a>
+          <div>
+            <a href="/logout" class="btn btn-outline-danger">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Alert Messages -->
+      <div class="alert-container">
+        <div
+          th:if="${session.pass}"
+          class="alert alert-success alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <span th:text="${session.pass}"></span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+        <div
+          th:if="${session.fail}"
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <span th:text="${session.fail}"></span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+        <div
+          th:if="${@generalService.removeMessage()}"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-info-circle-fill me-2"></i>
+          <span th:text="${@generalService.removeMessage()}"></span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="container">
+          <div class="form-container">
+            <h2 class="form-title">
+              <i class="bi bi-pencil-square"></i> Edit Product
+            </h2>
+
+            <form
+              action="/admin/update-product"
+              method="post"
+              enctype="multipart/form-data"
+              id="productForm"
+            >
+              <input type="hidden" name="id" th:value="${product.id}" />
+
+              <!-- Product Name -->
+              <div class="form-group">
+                <label for="productName" class="form-label">
+                  <i class="bi bi-tag"></i>
+                  Product Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  class="form-control"
+                  id="productName"
+                  th:value="${product.name}"
+                  required
+                />
+              </div>
+
+              <!-- Product Description -->
+              <div class="form-group">
+                <label for="productDescription" class="form-label">
+                  <i class="bi bi-file-text"></i>
+                  Description
+                </label>
+                <textarea
+                  class="form-control"
+                  name="description"
+                  id="productDescription"
+                  rows="4"
+                  required
+                  th:text="${product.description}"
+                ></textarea>
+              </div>
+
+              <!-- Stock and Price Row -->
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="productStock" class="form-label">
+                      <i class="bi bi-box"></i>
+                      Stock Quantity
+                    </label>
+                    <input
+                      type="number"
+                      name="stock"
+                      class="form-control"
+                      id="productStock"
+                      th:value="${product.stock}"
+                      min="0"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="productPrice" class="form-label">
+                      <i class="bi bi-currency-rupee"></i>
+                      Price (₹)
+                    </label>
+                    <input
+                      type="number"
+                      name="price"
+                      class="form-control"
+                      id="productPrice"
+                      th:value="${product.price}"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Product Image -->
+              <div class="form-group">
+                <label for="productImage" class="form-label">
+                  <i class="bi bi-image"></i>
+                  Product Image
+                </label>
+                <input
+                  type="file"
+                  name="image"
+                  class="form-control"
+                  id="productImage"
+                  accept="image/*"
+                />
+
+                <div class="current-image-container">
+                  <img
+                    th:src="${product.imageLink}"
+                    alt="Current Product Image"
+                    class="current-img"
+                    onerror="this.src='https://via.placeholder.com/120x120/334155/cbd5e1?text=No+Image'"
+                  />
+                  <div class="image-caption">
+                    <i class="bi bi-info-circle"></i>
+                    Current image shown above. Upload new image to replace.
+                  </div>
+                </div>
+
+                <small class="text-muted mt-2 d-block">
+                  <i class="bi bi-info-circle"></i>
+                  Supported formats: JPG, PNG, GIF (Max size: 5MB)
+                </small>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="bi bi-check-circle"></i>
+                Update Product
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <p>
+            &copy; 2025 FlipZone Admin Panel. All rights reserved. Made with
+            <i class="bi bi-heart-fill text-danger"></i>
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("productForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const formContainer = document.querySelector(".form-container");
+
+        // Auto-hide alerts after 5 seconds
+        const alerts = document.querySelectorAll(".alert");
+        alerts.forEach(function (alert) {
+          setTimeout(function () {
+            const bsAlert = bootstrap.Alert.getInstance(alert);
+            if (bsAlert) {
+              bsAlert.close();
+            }
+          }, 5000);
+        });
+
+        // Add entrance animation
+        formContainer.style.opacity = "0";
+        formContainer.style.transform = "translateY(30px)";
+        formContainer.style.transition = "all 0.6s ease";
+
+        setTimeout(() => {
+          formContainer.style.opacity = "1";
+          formContainer.style.transform = "translateY(0)";
+        }, 100);
+
+        // Form submission with loading state
+        form.addEventListener("submit", function (e) {
+          if (validateForm()) {
+            // Add loading state
+            submitBtn.innerHTML =
+              '<i class="bi bi-arrow-clockwise"></i> Updating Product...';
+            submitBtn.disabled = true;
+            formContainer.classList.add("loading");
+          } else {
+            e.preventDefault();
+          }
+        });
+
+        // File input validation
+        const fileInput = document.getElementById("productImage");
+        fileInput.addEventListener("change", function () {
+          const file = this.files[0];
+          if (file) {
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+              alert("File size must be less than 5MB");
+              this.value = "";
+              return;
+            }
+
+            // Check file type
+            const allowedTypes = [
+              "image/jpeg",
+              "image/jpg",
+              "image/png",
+              "image/gif",
+            ];
+            if (!allowedTypes.includes(file.type)) {
+              alert("Please select a valid image file (JPG, PNG, GIF)");
+              this.value = "";
+              return;
+            }
+
+            // Preview new image
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const currentImg = document.querySelector(".current-img");
+              currentImg.src = e.target.result;
+              document.querySelector(".image-caption").innerHTML =
+                '<i class="bi bi-info-circle"></i> New image selected. This will replace the current image.';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Real-time validation feedback
+        const inputs = document.querySelectorAll(".form-control");
+        inputs.forEach((input) => {
+          input.addEventListener("blur", function () {
+            validateField(this);
+          });
+
+          input.addEventListener("input", function () {
+            if (this.classList.contains("is-invalid")) {
+              validateField(this);
+            }
+          });
+        });
+
+        // Enhanced image loading for current image
+        const currentImg = document.querySelector(".current-img");
+        if (currentImg) {
+          currentImg.style.opacity = "0";
+          currentImg.style.transition = "opacity 0.4s ease";
+
+          const showImage = () => {
+            currentImg.style.opacity = "1";
+          };
+
+          if (currentImg.complete && currentImg.naturalHeight !== 0) {
+            showImage();
+          } else {
+            currentImg.addEventListener("load", showImage);
+            currentImg.addEventListener("error", function () {
+              this.src =
+                "https://via.placeholder.com/120x120/334155/cbd5e1?text=No+Image";
+              showImage();
+            });
+          }
+        }
+      });
+
+      function validateField(field) {
+        const value = field.value.trim();
+
+        // Remove existing validation classes
+        field.classList.remove("is-valid", "is-invalid");
+
+        if (field.hasAttribute("required") && !value) {
+          field.classList.add("is-invalid");
+          return false;
+        }
+
+        // Specific validations
+        if (field.type === "number" && value) {
+          const num = parseFloat(value);
+          if (num < 0) {
+            field.classList.add("is-invalid");
+            return false;
+          }
+        }
+
+        if (field.type === "file" && field.files.length > 0) {
+          const file = field.files[0];
+          if (file.size > 5 * 1024 * 1024) {
+            field.classList.add("is-invalid");
+            return false;
+          }
+        }
+
+        if (value) {
+          field.classList.add("is-valid");
+        }
+
+        return true;
+      }
+
+      function validateForm() {
+        const name = document.getElementById("productName").value.trim();
+        const description = document
+          .getElementById("productDescription")
+          .value.trim();
+        const stock = document.getElementById("productStock").value;
+        const price = document.getElementById("productPrice").value;
+
+        if (!name) {
+          alert("Please enter product name");
+          document.getElementById("productName").focus();
+          return false;
+        }
+
+        if (!description) {
+          alert("Please enter product description");
+          document.getElementById("productDescription").focus();
+          return false;
+        }
+
+        if (!stock || stock < 0) {
+          alert("Please enter valid stock quantity");
+          document.getElementById("productStock").focus();
+          return false;
+        }
+
+        if (!price || price <= 0) {
+          alert("Please enter valid price");
+          document.getElementById("productPrice").focus();
+          return false;
+        }
+
+        return true;
+      }
+
+      // Add click feedback for buttons
+      document.addEventListener("click", function (e) {
+        if (
+          e.target.classList.contains("btn-submit") ||
+          e.target.closest(".btn-submit")
+        ) {
+          const button = e.target.classList.contains("btn-submit")
+            ? e.target
+            : e.target.closest(".btn-submit");
+          button.style.transform = "scale(0.95)";
+          setTimeout(() => {
+            button.style.transform = "";
+          }, 150);
+        }
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", function (e) {
+        // Press Ctrl+S to save
+        if (e.ctrlKey && e.key === "s") {
+          e.preventDefault();
+          document.getElementById("productForm").submit();
+        }
+        // Press Escape to go back
+        if (e.key === "Escape") {
+          window.location.href = "/admin/view-products";
+        }
+      });
+
+      // Prevent accidental navigation away with unsaved changes
+      let formChanged = false;
+      const formInputs = document.querySelectorAll(
+        "#productForm input, #productForm textarea"
+      );
+      formInputs.forEach((input) => {
+        input.addEventListener("input", () => {
+          formChanged = true;
+        });
+      });
+
+      window.addEventListener("beforeunload", function (e) {
+        if (formChanged) {
+          e.preventDefault();
+          e.returnValue = "";
+        }
+      });
+
+      // Reset form changed flag on submit
+      document.getElementById("productForm").addEventListener("submit", () => {
+        formChanged = false;
+      });
+    </script>
+  </body>
+</html>
