@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset Password - OTP Verification</title>
+</head>
+<body>
+
+  <h2>Reset Your Password</h2>
+  <form action="/reset-password" method="POST">
+
+    <!-- OTP Input -->
+    <label for="otp">Enter OTP:</label><br>
+    <input type="text" id="otp" name="otp" maxlength="6" required><br><br>
+
+    <!-- New Password Input -->
+    <label for="new-password">New Password:</label><br>
+    <input type="password" id="new-password" name="password" required><br><br>
+
+    <!-- Submit Button -->
+    <button type="submit">Reset Password</button>
+  </form>
+
+  <p>
+    Didn't receive the OTP? <a href="/resend-otp">Resend OTP</a>
+  </p>
+
+</body>
+</html>

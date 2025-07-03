@@ -36,17 +36,25 @@ public class GeneralController {
 	public String logout(HttpSession session) {
 		return generalService.logout(session);
 	}
-	
+
 	@GetMapping("/forget-password")
 	public String loadForgetPasswordPage() {
-	    return "forget-password.html";
+		return "forget-password.html";
 	}
 
 	@PostMapping("/forget-password")
 	public String forgetPassword(@RequestParam String email, HttpSession session) {
-	    return generalService.handleForgetPassword(email, session);
+		return generalService.handleForgetPassword(email, session);
 	}
 
-	
-	
+	@GetMapping("/reset-password")
+	public String resetPassword() {
+		return "resetOtp.html";
+	}
+
+	@PostMapping("/reset-password")
+	public String resetPassword(HttpSession session, @RequestParam int otp, @RequestParam String password) {
+		return generalService.resetPassword(session, otp, password);
+	}
+
 }
